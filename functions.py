@@ -100,7 +100,7 @@ def filtered_languages():
     df_german.to_json(r'outputs/de-DE-dev.jsonl', orient='records', lines=True)
 
 
-# variables = variables()
+variables = variables()
 
 
 def get_translations(index):
@@ -153,4 +153,3 @@ def upload_to_drive():
     # memory leak, therefore preventing its
     # deletion
     f = None
-
