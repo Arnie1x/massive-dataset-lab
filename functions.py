@@ -125,6 +125,35 @@ def get_translations(index):
     return translations_list
 
 
+def english_translations_to_json():
+    # This function creates one large JSONL file with English as the Pivot language and provides translations
+    # to all languages in our dataset
+
+    # Set our pivot language, English
+    df_pivot: DataFrame = pd.read_json(path_or_buf='dataset/data/en-US.jsonl', lines=True, encoding='utf-8')
+
+    # We filter our pivot language to only retain two rows and to only have the train sets
+    pivot_filtered: DataFrame = df_pivot[df_pivot['partition'] == 'train'].get(['id', 'utt'])
+
+    # Create a new empty column called translations which will be an array of all the different translations
+    pivot_filtered['translations'] = 'null'
+
+    # Variable `id` is used to update the id variable of the new filtered dataframe
+    id = 1
+    # Loop through all the rows and get their respective translations
+    for index, row in pivot_filtered.iterrows():
+        # if index > 1:
+        #     break
+        pivot_filtered.at[index, 'translations'] = get_translations(index)
+        print(id)
+        pivot_filtered.at[index, 'id'] = id
+        id += 1
+
+    # Export the dataframe to JSONL
+    pivot_filtered.to_json(r'outputs/en-xx-train-set-translations.jsonl', orient='records', lines=True, indent=4,
+                           force_ascii=False)
+
+
 def upload_to_drive():
     # Below code does the authentication
     # part of the code
