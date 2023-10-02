@@ -12,8 +12,8 @@ def english_translations(file_path, language_abbv):
     worksheet['A1'] = 'id'
     worksheet['B1'] = 'utt'
     worksheet['C1'] = 'annot_utt'
-    worksheet['D1'] = 'sw_utt'
-    worksheet['E1'] = 'sw_annot_utt'
+    worksheet['D1'] = language_abbv + '_utt'
+    worksheet['E1'] = language_abbv + '_annot_utt'
 
     # Adding english data to the sheet
     for index, row in df_pivot.iterrows():
