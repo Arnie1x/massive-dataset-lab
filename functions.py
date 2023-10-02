@@ -2,6 +2,8 @@ import pandas as pd
 import openpyxl as xlsx
 from pandas import DataFrame
 import os
+from pydrive.drive import GoogleDrive
+from pydrive.auth import GoogleAuth
 
 
 def variables():
@@ -98,7 +100,7 @@ def filtered_languages():
     df_german.to_json(r'outputs/de-DE-dev.jsonl', orient='records', lines=True)
 
 
-variables = variables()
+# variables = variables()
 
 
 def get_translations(index):
@@ -121,4 +123,34 @@ def get_translations(index):
         translations_list[abbv] = translation
 
     return translations_list
+
+
+def upload_to_drive():
+    # Below code does the authentication
+    # part of the code
+    gauth = GoogleAuth()
+
+    # Creates local webserver and auto
+    # handles authentication.
+    gauth.LocalWebserverAuth()
+    drive = GoogleDrive(gauth)
+
+    # replace the value of this variable
+    # with the absolute path of the directory
+    path = r"outputs"
+
+    # iterating thought all the files/folder
+    # of the desired directory
+    for x in os.listdir(path):
+        f = drive.CreateFile({'title': x})
+        f.SetContentFile(os.path.join(path, x))
+        f.Upload()
+
+    # Due to a known bug in pydrive if we
+    # don't empty the variable used to
+    # upload the files to Google Drive the
+    # file stays open in memory and causes a
+    # memory leak, therefore preventing its
+    # deletion
+    f = None
 
